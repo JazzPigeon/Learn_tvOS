@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct GameObject: Hashable {
+struct GameObject: Hashable, Identifiable {
+    var id: Int { uniqueID }
     var uniqueID : Int
     var name: String
     var image: String

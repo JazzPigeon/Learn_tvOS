@@ -12,7 +12,7 @@ struct GamesMainPSView: View {
     var model = GamesModel()
     
     @FocusState var focusedField: GameObject?
-    @Binding var launchGame: Bool
+    @State private var selectedGame: GameObject?
     
     var body: some View {
         VStack {
@@ -20,7 +20,7 @@ struct GamesMainPSView: View {
                 LazyHStack {
                     ForEach(model.getGames(), id: \.uniqueID) { game in
                         Button {
-                            launchGame = true
+                            selectedGame = game
                         } label: {
                             Image(game.image)
                                 .resizable()
@@ -69,7 +69,9 @@ struct GamesMainPSView: View {
         .frame(height: 600)
         .onAppear {
             focusedField = model.getGames().first
-            launchGame = false
+        }
+        .fullScreenCover(item: $selectedGame) { game in
+            GameDetailView(game: game)
         }
     }
 }

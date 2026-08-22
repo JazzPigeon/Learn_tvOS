@@ -10,7 +10,6 @@ import SwiftUI
 struct DashboardView: View {
     
     @State var backgroundImage: String?
-    @State var launchGame = false
     
     var body: some View {
         ZStack {
@@ -18,7 +17,7 @@ struct DashboardView: View {
                 .resizable()
                 .opacity(0.5)
             
-            NavigationView {
+            NavigationStack {
                 VStack (alignment: .leading, spacing: 0) {
                     
                     // MARK: Top Bar
@@ -45,7 +44,7 @@ struct DashboardView: View {
                     
                     // MARK: Main View
                     TabView {
-                        GamesMainPSView(launchGame: $launchGame)
+                        GamesMainPSView()
                             .tabItem {
                                 Label("Games", systemImage: "gamecontroller.fill")
                             }
