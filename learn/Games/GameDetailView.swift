@@ -17,7 +17,7 @@ struct GameDetailView: View {
     init(game: GameObject) {
         self.game = game
         
-        let url = URL(string: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8")!
+        let url = URL(string: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8")!
         let item = AVPlayerItem(url: url)
         
         let title = AVMutableMetadataItem()
