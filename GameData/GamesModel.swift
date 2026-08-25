@@ -7,11 +7,11 @@
 
 import Foundation
 
-class GamesModel {
+public class GamesModel {
     
-    func getGames() -> [GameObject] {
+    public static func getGames() -> [GameObject] {
             var games: [GameObject] = [GameObject]()
-        games.append(GameObject(uniqueID: 1, name: "A WAY OUT", image: "ic-game-1", slug: .WayOut, timePlayed: "5h 6m", progress: "19%", medal: "Bronze"))
+        games.append(GameObject(uniqueID: 1, name: "A WAY OUT", image: "ic-game-1", slug: .WayOut, timePlayed: "5h 6m", progress: "1%", medal: "None"))
             games.append(GameObject(uniqueID: 2, name: "FIFA 22", image: "ic-game-2", slug: .F22, timePlayed: "10h 24m", progress: "76%", medal: "Bronze"))
             games.append(GameObject(uniqueID: 3, name: "FARCRY V", image: "ic-game-3", slug: .FC5, timePlayed: "2h 36m", progress: "27%", medal: "Gold"))
             games.append(GameObject(uniqueID: 4, name: "CALL OF DUTY MW", image: "ic-game-4", slug: .CODMW, timePlayed: "0h 45m", progress: "19%", medal: "Silver"))

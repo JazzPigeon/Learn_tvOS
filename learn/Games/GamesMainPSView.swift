@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import GameData
 
 struct GamesMainPSView: View {
     
@@ -50,7 +51,7 @@ struct GamesMainPSView: View {
                             Text(focusedField?.progress ?? "0%")
                         }
                         VStack (alignment: .leading, spacing: 8) {
-                            Text("Last Medal")
+                            Text("Last medal")
                             HStack (spacing: 12) {
                                 Image(systemName: "medal.fill")
                                     .frame(width: 40, height: 40)
