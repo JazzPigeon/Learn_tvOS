@@ -49,8 +49,7 @@ jobs:
               -destination "$DESTINATION" \
               -resultBundlePath "$RESULT_BUNDLE" \
               -derivedDataPath build/DerivedData \
-              -only-testing:learnUITests \
-              -skip-testing:learnUITests/LaunchPerformanceTests \
+              -testPlan learn \
               -parallel-testing-enabled NO \
               -test-timeouts-enabled YES \
               -maximum-test-execution-time-allowance 300 \
