@@ -8,8 +8,21 @@
 import XCTest
 
 enum Focus {
+    case up
+    case down
+    case left
+    case right
 
     private static var app: XCUIApplication { XCUIApplication() }
+
+    private var remoteButton: XCUIRemote.Button {
+        switch self {
+        case .up: return .up
+        case .down: return .down
+        case .left: return .left
+        case .right: return .right
+        }
+    }
 
     /// The element that currently holds focus, whatever it happens to be.
     static var current: XCUIElement {
@@ -63,21 +76,41 @@ enum Focus {
 
     /// Presses `direction` on the remote until `element` takes focus.
     @discardableResult
-    static func move(_ direction: XCUIRemote.Button,
+    static func move(_ direction: Focus,
                      to element: XCUIElement,
                      maxPresses: Int = 10) -> Bool {
         guard Wait.forElementToAppear(element) else { return false }
 
         for _ in 0..<maxPresses {
             if element.hasFocus { return true }
-            remote.press(direction)
+            remote.press(direction.remoteButton)
         }
         return element.hasFocus
     }
 
+    /// Move once in this direction.
+    @discardableResult
+    func move() -> Focus {
+        remote.press(remoteButton)
+        return self
+    }
+
+    /// Move once in `direction` and continue the chain from that case.
+    @discardableResult
+    func move(_ direction: Focus) -> Focus {
+        remote.press(direction.remoteButton)
+        return direction
+    }
+
+    /// Start a move chain from a direction.
+    @discardableResult
+    static func move(_ direction: Focus) -> Focus {
+        direction.move()
+    }
+
     @discardableResult
     static func select(_ element: XCUIElement,
-                       movingWith direction: XCUIRemote.Button,
+                       movingWith direction: Focus,
                        maxPresses: Int = 10) -> Bool {
         guard move(direction, to: element, maxPresses: maxPresses) else { return false }
         remote.press(.select)
