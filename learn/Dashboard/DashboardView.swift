@@ -27,7 +27,7 @@ struct DashboardView: View {
                             .frame(width: 80, height: 80)
                             .clipShape(Circle())
                         VStack (alignment: .leading) {
-                            Text("C Michalowski")
+                            Text("JazzPigeon")
                             HStack (spacing: 15) {
                                 Image(systemName: "star.fill")
                                     .foregroundStyle(.yellow)

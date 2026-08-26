@@ -1,5 +1,5 @@
 //
-//  learnUITests.swift
+//  DashboardTests.swift
 //  learnUITests
 //
 //  Created by Cindy Michalowski on 8/21/26.
@@ -7,7 +7,7 @@
 
 import XCTest
 
-final class learnUITests: BaseTest {
+final class DashboardTests: BaseTest {
 
     @MainActor
     func testLaunchPerformance() throws {
@@ -17,7 +17,8 @@ final class learnUITests: BaseTest {
         }
     }
     
-    func testSample() throws {
-        print("Wait here")
+    func testDashboardDisplayedAsExpectedOnLaunch() throws {
+        DashboardScreen()
+            .isDisplayedAsExpectedOnLaunch()
     }
 }
