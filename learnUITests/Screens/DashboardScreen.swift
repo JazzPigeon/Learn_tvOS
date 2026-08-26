@@ -38,10 +38,7 @@ class DashboardScreen: BaseScreen {
     @discardableResult
     func navigateToTabBar() -> DashboardScreen {
         // Verify that tab bar is focused, then select the tab
-        while !btnCategory("Games").hasFocus {
-            print("CURRENT ELEMENT WITH FOCUS: \(String(describing: Focus.current.value))")
-            remote.press(.up)
-        }
+        Focus.move(.up, to: btnCategory("Games"))
         return self
     }
     
@@ -78,9 +75,7 @@ class DashboardScreen: BaseScreen {
         XCTAssert(tabBar.waitForExistence(timeout: 10), "Tab Bar is missing from the Dashboard")
         
         // MARK: FIX - Don't hardcode
-        while btnGame("ic-game-1").hasFocus {
-            remote.press(.up)
-        }
+        Focus.move(.up, to: btnCategory("Games"))
         
         XCTAssert(btnCategory(Dashboard.Menu.games.rawValue).hasFocus, "'Games' button is not selected by default upon launch")
         
@@ -96,13 +91,8 @@ class DashboardScreen: BaseScreen {
         let firstGameName = GamesModel.getGames().first?.name ?? ""
         
         // MARK: Fix hardcoded string
-        while btnCategory("Games").hasFocus {
-            remote.press(.down)
-        }
-        
-        while !btnGame("ic-game-1").hasFocus {
-            remote.press(.left)
-        }
+        Focus.move(.down)
+        Focus.move(.left, to: btnGame("ic-game-1"))
         
         XCTAssert(txtGameTitle(firstGameName).exists, "Selected game title is missing from Dashboard")
         

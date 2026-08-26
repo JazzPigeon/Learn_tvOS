@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import GameData
 
 struct GamesMainPSView: View {
     
