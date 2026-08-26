@@ -1,0 +1,88 @@
+name: tvOS UI Tests
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# A new push to a PR makes the in-flight run irrelevant, and UI tests are slow
+# enough that letting superseded runs finish wastes a lot of runner time.
+concurrency:
+  group: ui-tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ui-tests:
+    name: Apple TV 4K (tvOS 26.5)
+    runs-on: macos-26
+    timeout-minutes: 45
+
+    env:
+      XCODE_APP: /Applications/Xcode_26.5.app
+      PROJECT: learn.xcodeproj
+      SCHEME: learn
+      DESTINATION: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=26.5
+      RESULT_BUNDLE: build/ui-tests.xcresult
+      BUILD_LOG: build/xcodebuild.log
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      - name: Select Xcode
+        run: |
+          sudo xcode-select -switch "$XCODE_APP"
+          xcodebuild -version
+
+      - name: Show available tvOS simulators
+        run: xcrun simctl list devices available tvOS
+
+      - name: Run UI tests
+        run: |
+          set -o pipefail
+          mkdir -p build
+
+          run_xcodebuild() {
+            NSUnbufferedIO=YES xcodebuild test \
+              -project "$PROJECT" \
+              -scheme "$SCHEME" \
+              -destination "$DESTINATION" \
+              -resultBundlePath "$RESULT_BUNDLE" \
+              -derivedDataPath build/DerivedData \
+              -only-testing:learnUITests \
+              -skip-testing:learnUITests/LaunchPerformanceTests \
+              -parallel-testing-enabled NO \
+              -test-timeouts-enabled YES \
+              -maximum-test-execution-time-allowance 300 \
+              CODE_SIGNING_ALLOWED=NO
+          }
+
+          # xcbeautify is preinstalled on the macOS runner images, but fall back
+          # to the raw log rather than failing the run if that ever changes.
+          if command -v xcbeautify >/dev/null 2>&1; then
+            run_xcodebuild 2>&1 | tee "$BUILD_LOG" | xcbeautify
+          else
+            run_xcodebuild 2>&1 | tee "$BUILD_LOG"
+          fi
+
+      - name: Publish test report
+        if: always()
+        run: |
+          if [ -d "$RESULT_BUNDLE" ]; then
+            python3 Scripts/xcresult_summary.py "$RESULT_BUNDLE" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## tvOS UI Tests" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "No result bundle was produced — the run failed before testing started." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload result bundle and log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ui-test-results
+          path: |
+            ${{ env.RESULT_BUNDLE }}
+            ${{ env.BUILD_LOG }}
+          retention-days: 14
+          if-no-files-found: warn
